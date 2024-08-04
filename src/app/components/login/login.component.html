@@ -1,0 +1,62 @@
+<div>
+  <div class="container">
+    <h1 class="text-center mb-5 mt-5 text-primary fs-2">Login to Dashboard</h1>
+    <div class="w-50 mx-auto">
+      <form
+        class="row justify-content-center gap-3"
+        [formGroup]="adminLoginForm"
+        (ngSubmit)="login()"
+      >
+        <div class="col-12">
+          <mat-form-field class="w-100">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email" />
+          </mat-form-field>
+          @if (adminLoginForm.controls['email'].hasError('required') &&
+          adminLoginForm.controls['email'].touched) {
+          <span class="text-danger">Email is required</span>
+          } @if (adminLoginForm.controls['email'].hasError('email') &&
+          adminLoginForm.controls['email'].touched) {
+          <span class="text-danger">Invalid email</span>
+          }
+        </div>
+
+        <div class="col-12">
+          <mat-form-field class="w-100">
+            <mat-label>Enter your password</mat-label>
+            <input
+              matInput
+              formControlName="password"
+              [type]="hide ? 'password' : 'text'"
+            />
+
+            <button
+              type="button"
+              mat-icon-button
+              matSuffix
+              (click)="clickEvent($event)"
+              [attr.aria-label]="'Hide password'"
+              [attr.aria-pressed]="hide"
+            >
+              <mat-icon>{{ hide ? "visibility_off" : "visibility" }}</mat-icon>
+            </button>
+          </mat-form-field>
+          @if (adminLoginForm.controls['password'].hasError('required') &&
+          adminLoginForm.controls['password'].touched) {
+          <span class="text-danger">Password is required</span>
+          }
+        </div>
+        <div class="col-12 d-flex justify-content-center">
+          <button
+            [disabled]="!adminLoginForm.valid"
+            style="background-color: #007bff"
+            mat-flat-button
+            color="warn"
+          >
+            Login
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

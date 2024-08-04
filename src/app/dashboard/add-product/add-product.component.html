@@ -1,0 +1,119 @@
+<div class="container mt-5">
+  <div
+    class="bg-light p-3 rounded shadow d-flex justify-content-center align-items-center flex-column w-75 mx-auto"
+  >
+    <h2>Add Product</h2>
+    <!-- <form>
+      <button type="submit" class="btn btn-primary">Add Product</button>
+    </form> -->
+    <form
+      class="example-form text-center"
+      (submit)="addFoodData()"
+      [formGroup]="foodFromData"
+    >
+      <mat-form-field class="example-full-width">
+        <mat-label>Product Name</mat-label>
+        <input matInput placeholder="Ex. Pizza" formControlName="name" />
+      </mat-form-field>
+      @if (foodFromData.controls.name.touched &&
+      foodFromData.controls.name.invalid) {
+      <p class="text-danger text-start">Name is required</p>
+      }
+      <mat-form-field class="example-full-width">
+        <mat-label>Food Price</mat-label>
+        <input
+          matInput
+          placeholder="Ex. 100"
+          type="number"
+          formControlName="price"
+        />
+      </mat-form-field>
+      @if (controls.price.touched && controls.price.invalid) {
+      <p class="text-danger text-start">Price is required</p>
+      }
+      <mat-form-field class="example-full-width">
+        <mat-label>Food Cooking Time</mat-label>
+        <input matInput placeholder="Ex. 10-15" formControlName="cookingTime" />
+      </mat-form-field>
+      @if (controls.cookingTime.touched && controls.cookingTime.invalid) {
+      <p class="text-danger text-start">Cooking Time is required</p>
+      } @if (errorMessage['isCookingTimeError']) {
+      <p class="text-danger text-start">
+        {{ errorMessage["cookingTimeError"] }}
+      </p>
+      }
+      <div class="form-group mb-3">
+        <!-- <input class="form-control" placeholder="Food Image" type="file" /> -->
+        <input
+          class="form-control"
+          type="file"
+          (change)="onFileSelected($event)"
+          accept="image/*"
+        />
+      </div>
+      @if (controls.foodImage.touched && controls.foodImage.invalid) {
+      <p class="text-danger text-start">Image is required</p>
+      }
+      <mat-form-field class="example-full-width">
+        <mat-label>Food Stars</mat-label>
+        <input
+          matInput
+          placeholder="Ex. 5"
+          placeholder="Food Stars"
+          type="number"
+          formControlName="stars"
+        />
+      </mat-form-field>
+      @if (controls.stars.touched && controls.stars.errors?.['required']) {
+      <p class="text-danger text-start">Stars is required</p>
+      } @if (controls.stars.touched && controls.stars.errors?.['min']) {
+      <p class="text-danger text-start">Stars must be greater than 0</p>
+      } @if (controls.stars.touched && controls.stars.errors?.['max']) {
+      <p class="text-danger text-start">Stars must be less than 5</p>
+      }
+      <mat-form-field class="example-full-width">
+        <mat-label>Food Origins</mat-label>
+        <input
+          #originsVal
+          matInput
+          placeholder="Ex. Italy"
+          formArrayName="origins"
+          (change)="handelInputData(originsVal.value, 'origins')"
+        />
+      </mat-form-field>
+      @if (controls.origins.touched && controls.origins.invalid) {
+      <p class="text-danger text-start">Origins is required</p>
+      } @if (errorMessage['isOriginsError']) {
+      <p class="text-danger text-start">
+        Invalid Origins {{ errorMessage["origins"].join(" , ") }}, You can set
+        {{ foodOrigins | json }}
+      </p>
+      }
+      <mat-form-field class="example-full-width">
+        <mat-label>Food Tags</mat-label>
+        <input
+          #tagsVal
+          (change)="handelInputData(tagsVal.value, 'tags')"
+          matInput
+          placeholder="Ex. Vegetarian, Gluten Free"
+          formArrayName="tags"
+        />
+      </mat-form-field>
+      @if (controls.tags.touched && controls.tags.invalid) {
+      <p class="text-danger text-start">Tags is required</p>
+      } @if (errorMessage['isTagsError']) {
+      <p class="text-danger text-start">
+        Invalid Tags {{ errorMessage["tags"].join(" , ") }} , You can set
+        {{ foodTags | json }}
+      </p>
+      }
+      <button
+        [disabled]="!foodFromData.valid"
+        type="submit"
+        class="btn btn-primary"
+      >
+        Add Product
+      </button>
+    </form>
+  </div>
+</div>

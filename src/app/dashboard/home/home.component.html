@@ -1,0 +1,399 @@
+<app-navbar class="w-100"></app-navbar>
+@if (GlobleService.isHome) {
+<div class="container">
+  <div>
+    <h2 class="text-center my-3">Your Products</h2>
+    <div class="table-responsive">
+      <table
+        style="min-width: 700px"
+        class="table table-striped text-center border"
+      >
+        <thead>
+          <tr>
+            <th>Product Name</th>
+            <th>Price</th>
+            <th>Tags</th>
+            <th>Origins</th>
+            <th>Image</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody class="table">
+          @for (food of foods; track $index) {
+          <tr class="">
+            <td class="">
+              <p class="mb-0 text-capitalize">{{ food.name }}</p>
+            </td>
+            <td class="">
+              <p class="mb-0">{{ food.price | currency }}</p>
+            </td>
+            <td class="">
+              <p class="mb-0">
+                @for (tag of food.tags; track $index) {
+                <span
+                  class="badge text-bg-primary text-white me-1 py-1 text-capitalize"
+                  >{{ tag }}
+                </span>
+                }
+              </p>
+            </td>
+            <td class="">
+              <p class="mb-0">
+                @for (origin of food.origins; track $index) {
+                <span
+                  class="badge text-bg-success text-white me-1 py-1 text-capitalize"
+                  >{{ origin }}</span
+                >
+                }
+              </p>
+            </td>
+            <td class="">
+              <img
+                style="width: 80px"
+                [src]="food.foodImage"
+                alt="Food Image"
+                class="mb-0 img-fluid rounded-pill"
+              />
+            </td>
+            <td>
+              <button
+                type="button"
+                class="btn btn-outline-primary mx-2 py-1"
+                data-bs-toggle="modal"
+                data-bs-target="#editModel"
+                (click)="editFood(food)"
+              >
+                Edit
+              </button>
+              <button
+                type="button"
+                class="btn btn-danger py-1"
+                data-bs-toggle="modal"
+                data-bs-target="#deleteModel"
+                (click)="deleteFood(food)"
+              >
+                Delete
+              </button>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div>
+    <h2 class="text-center my-3">All Users</h2>
+    <div class="table-responsive">
+      <table
+        style="min-width: 700px"
+        class="table table-striped text-center border"
+      >
+        <thead>
+          <tr>
+            <th>User Name</th>
+            <th>User Email</th>
+            <th>User Gender</th>
+            <th>User Image</th>
+            <th>User MobileNumber</th>
+            <th>User Role</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody class="table table-borderless">
+          @for (user of users; track $index) {
+          <tr [ngClass]="user.isBlocked ? 'opacity-25' : ''">
+            <td class="">
+              <p class="mb-0 text-capitalize">{{ user.name }}</p>
+            </td>
+            <td class="">
+              <p class="mb-0">{{ user.email }}</p>
+            </td>
+            <td class="">
+              <p class="mb-0">
+                {{ user.gender }}
+              </p>
+            </td>
+            <td class="">
+              <img
+                style="width: 60px"
+                [src]="user.image"
+                alt="UserImage"
+                class="mb-0 img-fluid rounded-pill"
+              />
+            </td>
+            <td class="">
+              <p class="mb-0">{{ user.phone }}</p>
+            </td>
+            <td class="">
+              <p class="mb-0">{{ user.role }}</p>
+            </td>
+            <td>
+              @if (user.isBlocked) {
+              <button
+                type="button"
+                class="btn btn-outline-primary mx-2 py-1"
+                (click)="handelUnblock(user._id)"
+              >
+                Unblock
+              </button>
+
+              }@else {
+              <button
+                type="button"
+                class="btn btn-outline-primary mx-2 py-1"
+                (click)="handelBlock(user._id)"
+              >
+                Block
+              </button>
+              }
+              <button
+                type="button"
+                class="btn btn-danger py-1"
+                data-bs-toggle="modal"
+                data-bs-target="#deleteUserModel"
+                (click)="deleteUserId(user._id)"
+              >
+                Delete
+              </button>
+            </td>
+          </tr>
+          }@empty {
+          <tr class="">
+            No Users Found
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <!-- // Delete Model -->
+  <div
+    class="modal fade"
+    id="deleteModel"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false"
+    tabindex="-1"
+    aria-labelledby="staticBackdropLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header border-0">
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body fs-4">Do you want to delete this food ?</div>
+        <div class="modal-footer border-0">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Close
+          </button>
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="handelDeleteFood()"
+            data-bs-dismiss="modal"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--  Edit Model  -->
+<div
+  class="modal fade"
+  id="editModel"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+  tabindex="-1"
+  aria-labelledby="staticBackdropLabel"
+  aria-hidden="true"
+  [hidden]="showEditForm"
+>
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">Edit Food</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="editForm" (ngSubmit)="handelEditForm()">
+          <div class="mb-4 position-relative">
+            <label for="name" class="form-label">New Food name</label>
+            <input
+              type="text"
+              class="form-control"
+              [ngClass]="[
+                editForm.controls.name.invalid &&
+                editForm.controls.name.touched &&
+                editForm.controls.name.dirty
+                  ? 'is-invalid'
+                  : '',
+
+                editForm.controls.name.valid &&
+                editForm.controls.name.touched &&
+                editForm.controls.name.dirty
+                  ? 'is-valid'
+                  : ''
+              ]"
+              id="name"
+              aria-describedby="emailHelp"
+              formControlName="name"
+              name="name"
+            />
+            <div class="invalid-tooltip">Please provide a valid name.</div>
+            <div class="valid-tooltip">Looks good!</div>
+          </div>
+          <div class="mb-4 position-relative">
+            <label for="price" class="form-label">New Food price</label>
+            <input
+              type="text"
+              class="form-control"
+              [ngClass]="[
+                editForm.controls.price.invalid &&
+                editForm.controls.price.touched &&
+                editForm.controls.price.dirty
+                  ? 'is-invalid'
+                  : '',
+
+                editForm.controls.price.valid &&
+                editForm.controls.price.touched &&
+                editForm.controls.price.dirty
+                  ? 'is-valid'
+                  : ''
+              ]"
+              id="price"
+              aria-describedby="emailHelp"
+              formControlName="price"
+              name="price"
+            />
+            <div class="invalid-tooltip">Please provide a valid price.</div>
+            <div class="valid-tooltip">Looks good!</div>
+          </div>
+          <div class="mb-4">
+            <select name="" id="" class="form-select" multiple>
+              <option value="" disabled>Select Tags</option>
+              @for (tag of foodTags; track $index) {
+              <option value="{{ tag }}" (click)="tagClick(tag)">
+                {{ tag }}
+              </option>
+              }
+            </select>
+          </div>
+          <div class="mb-4">
+            <select #origins name="" id="" class="form-select" multiple>
+              <option value="" disabled>Select Origins</option>
+              @for (origin of foodOrigins; track $index) {
+              <option value="{{ origin }}" (click)="originsClick(origin)">
+                {{ origin }}
+              </option>
+              }
+            </select>
+          </div>
+          <!-- <div class="mb-3">
+            <label for="tags" class="form-label">Tags</label>
+            <input
+              type="text"
+              class="form-control"
+              id="tags"
+              aria-describedby="emailHelp"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="origins" class="form-label">Origins</label>
+            <input
+              type="text"
+              class="form-control"
+              id="origins"
+              aria-describedby="emailHelp"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="image" class="form-label">Image</label>
+            <input
+              type="text"
+              class="form-control"
+              id="image"
+              aria-describedby="emailHelp"
+            />
+          </div> -->
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              type="submit"
+              class="btn btn-primary"
+              data-bs-dismiss="modal"
+              [disabled]="!isEditFormValid"
+            >
+              UpDate
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- // Delete User Model -->
+<div
+  class="modal fade"
+  id="deleteUserModel"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+  tabindex="-1"
+  aria-labelledby="staticBackdropLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header border-0">
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body fs-4">Do you want to delete this user ?</div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger"
+          (click)="handelDeleteUser()"
+          data-bs-dismiss="modal"
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+}@else {
+<div class="w-100">
+  <router-outlet> </router-outlet>
+</div>
+}
